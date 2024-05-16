@@ -19,7 +19,7 @@ services:
           - /measurements
         strip_path: false
 
-    - name: places_service
+  - name: places_service
     host: places_upstream
     protocol: http
     routes:
