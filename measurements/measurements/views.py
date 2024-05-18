@@ -41,8 +41,19 @@ def MeasurementCreate(request):
             measurement.place = data_json['place']
             measurement.save()
             return HttpResponse("successfully created measurement")
-        else:
+        
+        elif check_place(data_json) == True:
+            measurement = Measurement()
+            measurement.variable = data_json['variable']
+            measurement.value = data_json['value']
+            measurement.unit = data_json['unit']
+            measurement.place = data_json['place']
+            measurement.save()
+            return HttpResponse("successfully created measurement")
+        elif check_variable(data_json) == False:
             return HttpResponse("unsuccessfully created measurement. Variable does not exist")
+        elif check_place(data_json) == False:
+            return HttpResponse("unsuccessfully created measurement. Place does not exist")
 
 def MeasurementsCreate(request):
     if request.method == 'POST':
@@ -57,8 +68,16 @@ def MeasurementsCreate(request):
                         db_measurement.unit = measurement['unit']
                         db_measurement.place = measurement['place']
                         measurement_list.append(db_measurement)
-                    else:
-                        return HttpResponse("unsuccessfully created measurement. Variable does not exist")
-        
+                    elif check_place(measurement) == True:
+                        db_measurement = Measurement()
+                        db_measurement.variable = measurement['variable']
+                        db_measurement.value = measurement['value']
+                        db_measurement.unit = measurement['unit']
+                        db_measurement.place = measurement['place']
+                        measurement_list.append(db_measurement)
+                    elif check_variable(measurement) == False:
+                        return HttpResponse("unsuccessfully created measurements. Variable does not exist")
+                    elif check_place(measurement) == False:
+                        return HttpResponse("unsuccessfully created measurements. Place does not exist")        
         Measurement.objects.bulk_create(measurement_list)
         return HttpResponse("successfully created measurements")
